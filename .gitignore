@@ -74,3 +74,11 @@ typings/
 
 # FuseBox cache
 .fusebox/
+
+node_modules
+
+# SMC Project files
+
+static/models/
+static/textures/
+dist/
