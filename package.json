@@ -1,0 +1,29 @@
+{
+  "name": "smc_lco_pmi_awards2021",
+  "version": "1.0.0",
+  "description": "Awards gallery for 2021 PMI Project Management Awards.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "webpack --watch",
+    "start": "webpack serve --open",
+    "build": "webpack"
+  },
+  "keywords": [],
+  "author": "Steven M. Caruso Design Studio",
+  "license": "ISC",
+  "devDependencies": {
+    "copy-webpack-plugin": "latest",
+    "css-loader": "latest",
+    "html-webpack-plugin": "latest",
+    "raw-loader": "latest",
+    "style-loader": "latest",
+    "webpack": "latest",
+    "webpack-cli": "latest",
+    "webpack-dev-server": "^3.11.2"
+  },
+  "dependencies": {
+    "gsap": "^3.7.1",
+    "three": "^0.128.0"
+  }
+}
