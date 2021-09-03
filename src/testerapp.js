@@ -2,6 +2,7 @@ import * as THREE from "three";
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";             
 import {gsap} from "gsap/all";                                                
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js";  
+import { DirectionalLight } from "three";
 
 class TesterApp {
 
@@ -37,7 +38,7 @@ class TesterApp {
             100
         );
 
-        this.ViewportCamera.position.set(0, 1.5, -5);
+        this.ViewportCamera.position.set(0, 0, -5);
         this.scene.add(this.ViewportCamera);
 
         this.renderer = new THREE.WebGLRenderer({
@@ -49,6 +50,7 @@ class TesterApp {
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.renderer.shadowMap.type = THREE.BasicShadowMap;
         this.renderer.setClearColor("rgb(100,100,100)");
+        this.renderer.outputEncoding = THREE.sRGBEncoding;
         this.renderer.setAnimationLoop(this.RenderLoop.bind(this));
 
         const AxisHelper = new THREE.AxesHelper(2);
@@ -71,27 +73,74 @@ class TesterApp {
         const ambientLight = new THREE.AmbientLight(0x404040, 2);
         directionalLight.position.set(0,0,-5);
 
-        this.scene.add(ambientLight, directionalLight);
+        // this.scene.add(ambientLight, directionalLight);
 
         const TexLoader = new THREE.TextureLoader();
         const ModelLoader = new GLTFLoader();
+        const CubeMapLoader = new THREE.CubeTextureLoader();
 
-        const texture = TexLoader.load(
-            "./textures/MonitorOnArm01.jpg"
+        let ModelRepo = new THREE.Object3D();
+
+        const CabinInteriorCubemap = CubeMapLoader.load([
+            "./textures/cubemap/px.jpg",
+            "./textures/cubemap/nx.jpg",
+            "./textures/cubemap/py.jpg",
+            "./textures/cubemap/ny.jpg",
+            "./textures/cubemap/pz.jpg",
+            "./textures/cubemap/nz.jpg"
+        ]);
+
+        // this.scene.background = CabinInteriorCubemap;
+
+        const ModelPaths = {};
+        const TexturePaths = {};
+        const Materials = {};
+
+        // AIRCRAFT BODY 9/3
+
+        TexturePaths.FloorCarpet = "./textures/FloorCarpet.jpg";
+        ModelPaths.FloorCarpet = "./models/FloorCarpet.glb";
+
+        TexturePaths.MainFuselage = "./textures/MainFuselage.jpg";
+        ModelPaths.MainFuselage = "./models/MainFuselage.glb";
+        
+        // SCENE CONSTRUCTION
+
+        Object.keys(ModelPaths).forEach(
+            function(ObjectKey) {
+                Materials[ObjectKey] = ProcessTexture(TexturePaths[ObjectKey]);
+                ModelLoader.load(
+                    ModelPaths[ObjectKey],
+                    function(model) {
+                        model.scene.children[0].material = Materials[ObjectKey];
+                        ModelRepo.add(model.scene.children[0]);
+                    }
+                );
+            }
         );
+        
+        ModelRepo.rotateY(Math.PI * 0.5)
+        Materials.FloorCarpet.reflectivity = 0;
+        this.scene.add(ModelRepo);
+        
+        // DEVICES
 
-        const material = new THREE.MeshStandardMaterial({map: texture});
-        material.map.flipY = false;
-        material.roughness = 0.5;
 
-        ModelLoader.load(
-            "./models/MonitorOnArm01.glb",
-            OnLoad.bind(this)
-        )
+        function ProcessTexture(TexturePath) {
 
-        function OnLoad(model) {
-            model.scene.children[0].material = material;
-            this.scene.add(model.scene);
+            let texture = TexLoader.load(TexturePath);
+
+            let material = new THREE.MeshBasicMaterial({
+                map: texture,
+                envMap: CabinInteriorCubemap,
+                reflectivity: 0.1
+            });
+
+            material.map.flipY = false;
+            material.map.encoding = THREE.sRGBEncoding;
+
+            return material;
+
         }
 
     }
