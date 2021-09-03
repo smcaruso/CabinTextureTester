@@ -79,6 +79,6 @@ node_modules
 
 # SMC Project files
 
-.static/models
-.static/textures
-.dist/
+static/models
+static/textures
+dist/
