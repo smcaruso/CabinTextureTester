@@ -81,4 +81,4 @@ node_modules
 
 static/models/
 static/textures/
-dist/
+dist/*/*
