@@ -1,8 +1,8 @@
 import * as THREE from "three";                                               
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";             
 import {gsap} from "gsap/all";                                                
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js";  
-import { DirectionalLight, TextureLoader } from "three";
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js";
+import {FlyControls} from 'three/examples/jsm/controls/FlyControls.js';
 
 class TesterApp {
 
@@ -34,7 +34,7 @@ class TesterApp {
         this.ViewportCamera = new THREE.PerspectiveCamera(
             75,
             window.innerWidth / window.innerHeight,
-            0.1,
+            0.01,
             100
         );
 
@@ -53,10 +53,8 @@ class TesterApp {
         this.renderer.outputEncoding = THREE.sRGBEncoding;
         this.renderer.setAnimationLoop(this.RenderLoop.bind(this));
 
-        const AxisHelper = new THREE.AxesHelper(2);
-        this.scene.add(AxisHelper);
-
-
+        // const AxisHelper = new THREE.AxesHelper(2);
+        // this.scene.add(AxisHelper);
 
     }
 
@@ -73,7 +71,7 @@ class TesterApp {
         const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
         directionalLight.position.set(0,0,-5);
 
-        this.scene.add(ambientLight, directionalLight);
+        this.scene.add(ambientLight);
 
         const TexLoader = new THREE.TextureLoader();
         const ModelLoader = new GLTFLoader();
@@ -100,25 +98,11 @@ class TesterApp {
         const RoughnessPaths = {}
         const Materials = {};
 
-        // AIRCRAFT BODY 9/3
-
-        // // /*
-        // ModelLoader.load("./MainFuselageWitMaterials.glb", LoadModel.bind(this));
-        
-        // function LoadModel(model) {
-        //     console.log(model.scene.children)
-        //     model.scene.children[0].material.envMap = CabinInteriorCubemap;
-        //     model.scene.children[0].material.envMapIntensity = 2;
-        //     ModelRepo.add(model.scene)
-        // }
-
-        // // */
-
         ModelPaths.FloorCarpet = "./models/FloorCarpet.glb";
         TexturePaths.FloorCarpet = "./textures/FloorCarpet.jpg";
 
         ModelPaths.MainFuselage = "./models/MainFuselage.glb";
-        TexturePaths.MainFuselage = "./textures/MainFuselage.png";
+        TexturePaths.MainFuselage = "./textures/MainFuselage.jpg";
         MetalnessPaths.MainFuselage = "./textures/MainFuselage_metalness.png";
         RoughnessPaths.MainFuselage = "./textures/MainFuselage_roughness.png";
 
@@ -133,6 +117,65 @@ class TesterApp {
 
         ModelPaths.AftWall = "./models/AftWall.glb";
         TexturePaths.AftWall = "./textures/AftWall.jpg";
+
+        ModelPaths.Galley = "./models/Galley.glb";
+        TexturePaths.Galley = "./textures/Galley.jpg";
+
+        ModelPaths.Chair01 = "./models/Chair01.glb";
+        TexturePaths.Chair01 = "./textures/Chair01.jpg";
+        MetalnessPaths.Chair01 = "./textures/ChairMetalness.png";
+        RoughnessPaths.Chair01 = "./textures/ChairRoughness.png";
+
+        ModelPaths.Chair02 = "./models/Chair02.glb";
+        TexturePaths.Chair02 = "./textures/Chair02.jpg";
+        MetalnessPaths.Chair02 = MetalnessPaths.Chair01;
+        RoughnessPaths.Chair02 = RoughnessPaths.Chair01;
+
+        ModelPaths.Chair03 = "./models/Chair03.glb";
+        TexturePaths.Chair03 = "./textures/Chair03.jpg";
+        MetalnessPaths.Chair03 = MetalnessPaths.Chair01;
+        RoughnessPaths.Chair03 = RoughnessPaths.Chair01;
+
+        ModelPaths.Chair04 = "./models/Chair04.glb";
+        TexturePaths.Chair04 = "./textures/Chair04.jpg";
+        MetalnessPaths.Chair04 = MetalnessPaths.Chair01;
+        RoughnessPaths.Chair04 = RoughnessPaths.Chair01;
+
+        ModelPaths.Chair05 = "./models/Chair05.glb";
+        TexturePaths.Chair05 = "./textures/Chair05.jpg";
+        MetalnessPaths.Chair05 = MetalnessPaths.Chair01;
+        RoughnessPaths.Chair05 = RoughnessPaths.Chair01;
+
+        ModelPaths.Chair06 = "./models/Chair06.glb";
+        TexturePaths.Chair06 = "./textures/Chair06.jpg";
+        MetalnessPaths.Chair06 = MetalnessPaths.Chair01;
+        RoughnessPaths.Chair06 = RoughnessPaths.Chair01;
+
+        ModelPaths.Chair07 = "./models/Chair07.glb";
+        TexturePaths.Chair07 = "./textures/Chair07.jpg";
+        MetalnessPaths.Chair07 = MetalnessPaths.Chair01;
+        RoughnessPaths.Chair07 = RoughnessPaths.Chair01;
+
+        ModelPaths.BulkheadMonitors = "./models/BulkheadMonitors.glb";
+        TexturePaths.BulkheadMonitors = "./textures/BulkheadMonitors.jpg"
+
+        ModelPaths.Tablets = "./models/Tablets.glb"
+        TexturePaths.Tablets = "./textures/Tablets.jpg";
+
+        ModelPaths.htse01 = "./models/htse01.glb";
+        TexturePaths.htse01 = "./textures/htse01.jpg";
+
+        ModelPaths.htse02 = "./models/htse02.glb";
+        TexturePaths.htse02 = "./textures/htse02.jpg";
+
+        ModelPaths.htse03 = "./models/htse03.glb";
+        TexturePaths.htse03 = "./textures/htse03.jpg";
+
+        ModelPaths.Macbook = "./models/Macbook.glb";
+        TexturePaths.Macbook = "./textures/Macbook.jpg";
+
+        ModelPaths.Phone = "./models/AddedPhone.glb";
+        TexturePaths.Phone = "./textures/AddedPhone.jpg";
         
         // SCENE CONSTRUCTION
 
@@ -170,20 +213,11 @@ class TesterApp {
         );
         
         ModelRepo.rotateY(Math.PI * 0.5);
-        
-        // Materials.MainFuselage = new THREE.MeshStandardMaterial(
-        //     {color: 0x909095,
-        //     envMap: CabinInteriorCubemap,
-        //     envMapIntensity: 2,
-        //     roughness: 0.25,
-        //     metalness: 0
-        //     }
-        // );
 
-        // CUSTOM MATERIAL PROPERTIES
-
-        // Materials.FloorCarpet.envMapIntensity = 0;
+        Materials.FloorCarpet.envMapIntensity = 0;
         this.scene.add(ModelRepo);
+
+        console.log(this.scene);
         
         // DEVICES
 
@@ -191,16 +225,17 @@ class TesterApp {
         function ProcessTexture(TexturePath) {
 
             let texture = TexLoader.load(TexturePath);
+            texture.flipY = false;
+            texture.encoding = THREE.sRGBEncoding;
 
             let material = new THREE.MeshStandardMaterial({
                 map: texture,
+                roughness: 0.25, //.15,
                 envMap: CabinInteriorCubemap,
-                envMapIntensity: 2
+                envMapIntensity: 1
                 // reflectivity: 0.05 // for basic material only
             });
 
-            material.map.flipY = false;
-            material.map.encoding = THREE.sRGBEncoding;
 
             return material;
 
